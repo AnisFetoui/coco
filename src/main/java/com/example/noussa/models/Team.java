@@ -1,5 +1,6 @@
 package com.example.noussa.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +22,8 @@ public class Team {
     private boolean availability;
 //    @OneToMany(mappedBy = "team")
 //    private List<Project> projects;
-//    @OneToMany(mappedBy ="teem")
-//    private List<Employee> employees;
+    @OneToMany(mappedBy ="teem",fetch = FetchType.EAGER )
+    @JsonIgnore
+    private List<Employee> employees;
 
 }

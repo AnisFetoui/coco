@@ -11,6 +11,8 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/Note")
+@CrossOrigin(origins = "http://localhost:4200")
+
 public class NoteController {
     ISerivceNote iSerivceNote;
 
@@ -18,9 +20,9 @@ public class NoteController {
     public void addNote(@RequestBody Note p){
         iSerivceNote.addNote(p);
     }
-    @PutMapping("/updateNote")
-    public Note updateNote(@RequestBody Note p) throws Exception {
-        return iSerivceNote.updateNote(p);
+    @PutMapping("/updateNote/{id}")
+    public Note updateNote(@PathVariable("id") Long id,@RequestBody Note p){
+        return iSerivceNote.updateNote(id,p);
     }
     @DeleteMapping("/deleteNote/{p}")
     public void deleteNote(@PathVariable("p") Long p) {

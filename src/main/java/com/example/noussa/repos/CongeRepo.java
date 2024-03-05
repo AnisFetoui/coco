@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface CongeRepo extends JpaRepository<Conge,Long> {
-    @Query("SELECT c FROM Conge c WHERE c.employee.team.team_id = :teamId AND " +
+    @Query("SELECT c FROM Conge c WHERE c.employee.teem.team_id = :teamId AND " +
             "((c.date_debut BETWEEN :start AND :end) OR (c.date_fin BETWEEN :start AND :end))")
     List<Conge> findTeamConges(@Param("teamId") Long teamId,
                                @Param("start") Date start,

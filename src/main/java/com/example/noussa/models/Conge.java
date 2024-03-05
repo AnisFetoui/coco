@@ -1,5 +1,6 @@
 package com.example.noussa.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class Conge implements Serializable {
     private String justification;
 
     @ManyToOne(cascade = CascadeType.ALL)
+            @JsonIgnore
     Employee employee;
 
 

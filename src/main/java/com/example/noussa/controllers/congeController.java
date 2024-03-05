@@ -5,6 +5,7 @@ import com.example.noussa.models.Conge;
 import com.example.noussa.services.interfaces.IServiceAbsence;
 import com.example.noussa.services.interfaces.IServiceConge;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,15 +14,17 @@ import java.util.Set;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/Conge")
+@CrossOrigin(origins = "http://localhost:4200")
+
 public class congeController {
     IServiceConge iServiceConge;
-    @PostMapping("/saveConge")
-    public String saveConge(@RequestBody Conge p){
-        return iServiceConge.saveConge(p);
+    @PostMapping("/saveConge/{id}")
+    public ResponseEntity<String> saveCongeAffectAEmpl(@RequestBody Conge p, @PathVariable ("id") Long id){
+        return iServiceConge.saveConge(p,id);
     }
 
     @PutMapping("/updateConge/{id}")
-    public String updateConge(@PathVariable ("id") Long id,@RequestBody Conge p) throws Exception {
+    public ResponseEntity<String> updateConge(@PathVariable ("id") Long id,@RequestBody Conge p) throws Exception {
         return iServiceConge.updateConge(id,p);
     }
     @DeleteMapping("/deleteConge/{p}")

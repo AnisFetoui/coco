@@ -26,7 +26,6 @@ public class Employee implements Serializable {
     @Enumerated(EnumType.STRING)
     private PosteEmployee PosteEmployee;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
     Departement departement;
     @OneToMany(mappedBy="employee",fetch = FetchType.EAGER)
     Set<Conge> conges;
@@ -42,7 +41,7 @@ public class Employee implements Serializable {
     @OneToMany(mappedBy="emp",fetch = FetchType.EAGER)
     Set<Absence> absences;
     @ManyToOne (cascade = CascadeType.ALL)
-    Team team;
+    Team teem;
 
     private Long userId;
 }

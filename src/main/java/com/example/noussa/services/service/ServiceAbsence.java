@@ -22,10 +22,10 @@ public class ServiceAbsence implements IServiceAbsence {
     EmployeeRepo employeeRepo;
 
     @Override
-    public void addAbsence(Absence absence) {
-       // Employee emp = employeeRepo.findById(id).get();
-        //absence.setEmp(emp);
-       // absence.setValidee(true);
+    public void addAbsence(Absence absence,Long id) {
+        Employee emp = employeeRepo.findById(id).get();
+        absence.setEmp(emp);
+        //absence.setValidee(false);
         absenceRepo.save(absence);
 
     }

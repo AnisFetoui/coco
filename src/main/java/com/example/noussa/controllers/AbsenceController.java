@@ -14,9 +14,9 @@ import java.util.Set;
 @RequestMapping("/absence")
 public class AbsenceController {
     IServiceAbsence iServiceAbsence;
-    @PostMapping("/addAbsence")
-    public void addAbsence(@RequestBody Absence p){
-         iServiceAbsence.addAbsence(p);
+    @PostMapping("/addAbsence/{id}")
+    public void addAbsence(@RequestBody Absence p,@PathVariable ("id") Long id){
+         iServiceAbsence.addAbsence(p,id);
     }
     @PutMapping("/updateAbsence/{id}")
     public void updateAbsence(@PathVariable ("id") Long id, @RequestBody Absence updatedAbsence) {

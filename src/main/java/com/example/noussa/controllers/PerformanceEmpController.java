@@ -31,8 +31,8 @@ public class PerformanceEmpController {
     public PerformanceEmployee getPerformanceById(@PathVariable("id") Long id){
         return iSerivcePerformance.getPerformanceById(id);
     }
-    @GetMapping("/retrieveAbsencesForToday")
-    public List<PerformanceEmployee> retrieveAbsencesForToday(){
+    @GetMapping("/getAllPerformances")
+    public List<PerformanceEmployee> getAllPerformances(){
         return iSerivcePerformance.getAllPerformances();
     }
 }

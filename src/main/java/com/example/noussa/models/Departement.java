@@ -1,5 +1,6 @@
 package com.example.noussa.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +23,8 @@ public class Departement implements Serializable {
     private int maxSaturation;
     private int nbreEmpl;
     @OneToMany(mappedBy="departement",fetch = FetchType.EAGER)
+    @JsonIgnore
+
     Set<Employee> employees;
 
 }

@@ -1,5 +1,6 @@
 package com.example.noussa.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,5 +25,6 @@ public class PerformanceEmployee implements Serializable {
     @OneToOne(mappedBy = "performanceEmployee")
     Employee employee;
     @OneToMany(mappedBy = "performanceEmpl" ,fetch = FetchType.EAGER)
+    @JsonIgnore
     List<Note> notes;
 }

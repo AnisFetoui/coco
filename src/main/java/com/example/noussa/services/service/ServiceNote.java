@@ -21,7 +21,9 @@ public class ServiceNote implements ISerivceNote {
     }
 
     @Override
-    public Note updateNote(Note note) {
+    public Note updateNote(Long id,Note updatedNote) {
+        Note note = noteRepo.findById(id).get();
+        note.setNote(updatedNote.getNote());
        return noteRepo.save(note);
     }
 
