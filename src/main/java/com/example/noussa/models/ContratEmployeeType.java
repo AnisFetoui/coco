@@ -2,6 +2,7 @@ package com.example.noussa.models;
 
 public enum ContratEmployeeType {
     CDI_CLASSIQUE,
+    CIVP,
     CDI_INTERIM,
     CDI_CHANTIER,
     CDD_USAGE,

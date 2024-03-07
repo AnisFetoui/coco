@@ -1,5 +1,6 @@
 package com.example.noussa.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -17,8 +20,8 @@ import java.util.Date;
 public class ContratEmployee implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_detail_contrat_e;
-    private Long rib;
+    private Long id_contrat_e;
+    private String rib;
     private Long numeroSecuriteSociale;
     @Temporal(TemporalType.DATE)
     private Date date_debut;
@@ -30,6 +33,7 @@ public class ContratEmployee implements Serializable {
     private Boolean isArchive;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     Employee empl;
 
 }

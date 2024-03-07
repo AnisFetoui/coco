@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -21,7 +22,7 @@ public class Absence implements Serializable {
     private Long id_absence ;
     private String motif ;
     private String justification;
-    private Date date;
+    private LocalDate date;
     private boolean validee;
 
     @ManyToOne(cascade = CascadeType.ALL)

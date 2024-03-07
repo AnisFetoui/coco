@@ -2,10 +2,7 @@ package com.example.noussa.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Employee implements Serializable {
 
     @Id
@@ -33,15 +31,19 @@ public class Employee implements Serializable {
     @OneToMany(mappedBy="employe",fetch = FetchType.EAGER)
     Set<SalaireEmployee> salaireEmployees;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    PerformanceEmployee performanceEmployee;
+    @OneToMany(mappedBy="employeee",fetch = FetchType.EAGER)
+    Set<Note> notes;
 
     @OneToMany(mappedBy="empl",fetch = FetchType.EAGER)
     Set<ContratEmployee> contratEmployees;
     @OneToMany(mappedBy="emp",fetch = FetchType.EAGER)
     Set<Absence> absences;
+    private int nbrJourConge = 26;
+
     @ManyToOne (cascade = CascadeType.ALL)
     Team teem;
+    @OneToOne(cascade = CascadeType.ALL)
+    PerformanceEmployee performanceEmployee;
 
     private Long userId;
 }

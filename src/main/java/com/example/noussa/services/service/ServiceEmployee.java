@@ -6,6 +6,8 @@ import com.example.noussa.repos.EmployeeRepo;
 import com.example.noussa.services.interfaces.IServiceEmployee;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,12 +39,46 @@ public class ServiceEmployee implements IServiceEmployee {
 
     }
 
-
-
     @Override
-    public Employee updateEmployee(Employee employee) {
-        return employeeRepo.save(employee);
+    public ResponseEntity<Long> updateEmployee(Long id, Employee updatedEmployee) {
+        Employee emp = employeeRepo.findById(id).orElse(null);
+
+        if (emp == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(id);
+        }
+
+        Departement updatedDepartement = updatedEmployee.getDepartement();
+
+        if (updatedDepartement == null || updatedDepartement.getId_departement() == null) {
+            log.error("Validation failed for Employee update. ID: {} - Updated employee has null Departement or Departement ID.", id);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(id + 100);
+        }
+
+        Departement departement = departementRepo.findById(updatedDepartement.getId_departement()).orElse(null);
+
+        if (departement == null) {
+            log.error("Validation failed for Employee update. ID: {} - Departement not found for ID: {}", id, updatedDepartement.getId_departement());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(id + 100);
+        }
+
+        int max = departement.getMaxSaturation();
+        int saturation = departement.getNbreEmpl();
+
+        if (max <= saturation) {
+            log.error("Validation failed for Employee update. ID: {} - Departement is saturated.", id);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(id + 100);
+        } else {
+            emp.setDepartement(departement);
+            departement.setNbreEmpl(saturation + 1);
+            emp.setPosteEmployee(updatedEmployee.getPosteEmployee());
+            emp.setDate_embauche(updatedEmployee.getDate_embauche());
+            employeeRepo.save(emp);
+            departementRepo.save(departement);
+
+            return ResponseEntity.ok(id);
+        }
     }
+
 
     @Override
     public void deleteEmployee(Long id) {

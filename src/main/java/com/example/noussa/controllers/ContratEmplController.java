@@ -6,6 +6,7 @@ import com.example.noussa.services.interfaces.IServiceConge;
 import com.example.noussa.services.interfaces.IServiceContratEmpl;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -14,12 +15,14 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/contratEmpl")
+@CrossOrigin(origins = "http://localhost:4200")
+
 public class ContratEmplController {
     IServiceContratEmpl iServiceContratEmpl;
 
-    @PostMapping("/saveContratEmployee")
-    public void addContratEmployee(@RequestBody ContratEmployee p){
-        iServiceContratEmpl.addContratEmployee(p);
+    @PostMapping("/saveContratEmployee/{id}")
+    public ResponseEntity<Long> addContratEmployee(@RequestBody ContratEmployee p, @PathVariable("id") Long id){
+       return  iServiceContratEmpl.addContratEmployee(p,id);
     }
 
     @PutMapping("/updateContratEmployee")

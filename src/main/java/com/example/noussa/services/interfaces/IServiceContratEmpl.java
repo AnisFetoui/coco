@@ -1,12 +1,13 @@
 package com.example.noussa.services.interfaces;
 
 import com.example.noussa.models.ContratEmployee;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Date;
 import java.util.List;
 
 public interface IServiceContratEmpl {
-    public void addContratEmployee(ContratEmployee contrat);
+    public ResponseEntity<Long> addContratEmployee(ContratEmployee contrat, Long id);
     public ContratEmployee updateContratEmployee(ContratEmployee absence);
     public void deleteContratEmployee(Long id);
     public ContratEmployee getContratEmployee(Long id);

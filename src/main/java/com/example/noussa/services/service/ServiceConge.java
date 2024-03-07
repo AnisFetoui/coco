@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -27,13 +28,14 @@ public class ServiceConge implements IServiceConge {
         Employee employee = employeeRepo.findById(id).get();
         if(anis.size()>0){
         List<Conge> teamConges = congeRepo.findTeamConges(employee.getTeem().getTeam_id(), conge.getDate_debut(), conge.getDate_fin());
-
-        if (conge.getDate_debut().after(conge.getDate_fin())) {
-            return false;
-        }
-
         for (Conge teamConge : teamConges) {
-            if (conge.getDate_fin().after(teamConge.getDate_debut()) && conge.getDate_debut().before(teamConge.getDate_fin())) {
+            log.info("Conge: {}", conge);
+            log.info("Team Conge: {}", teamConge);
+            log.info("Employee NbrJourConge: {}", employee.getNbrJourConge());
+
+            if (conge.getDate_debut().after(conge.getDate_fin()) ||
+                    conge.getDate_fin().after(teamConge.getDate_debut()) && conge.getDate_debut().before(teamConge.getDate_fin()) ||
+            employee.getNbrJourConge()<0) {
                 return false;
             }
         }
@@ -41,24 +43,25 @@ public class ServiceConge implements IServiceConge {
         }else{
             return true;
         }
-
-
     }
 
 
-    public ResponseEntity<String> saveConge(Conge conge,Long id){
+    public ResponseEntity<Long> saveConge(Conge conge,Long id){
         if (isCongeRequestValid(conge,id)) {
             Employee employee = employeeRepo.findById(id).get();
             conge.setEmployee(employee);
-            conge.setStatutC(CongeStatut.PENDING);
+            long differenceInMilliseconds = conge.getDate_fin().getTime() - conge.getDate_debut().getTime();
+            long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMilliseconds);
+            employee.setNbrJourConge((int) (employee.getNbrJourConge() - differenceInDays));
+//            conge.setStatutC(CongeStatut.PENDING);
             congeRepo.save(conge);
-            return ResponseEntity.ok("Conge submitted with success");
+            return ResponseEntity.ok( conge.getId_conge());
         }else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something wrong");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(conge.getId_conge()+100);
         }
     }
     @Override
-    public ResponseEntity<String> updateConge(Long id,Conge updatedConge) {
+    public ResponseEntity<Long> updateConge(Long id,Conge updatedConge) {
         Conge conge = congeRepo.findById(id).get();
         if (isCongeRequestValid(updatedConge,conge.getEmployee().getId_employe())) {
             conge.setCommentaire(updatedConge.getCommentaire());
@@ -67,13 +70,14 @@ public class ServiceConge implements IServiceConge {
             conge.setDate_fin(updatedConge.getDate_fin());
             conge.setStatutC(updatedConge.getStatutC());
             conge.setTypeC(updatedConge.getTypeC());
-            congeRepo.save(updatedConge);
-            return ResponseEntity.ok("Conge updated with success");
+            congeRepo.save(conge);
+            return ResponseEntity.ok( conge.getId_conge());
         }else{
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something wrong");
+            log.error("Validation failed for Conge update. ID: {}", conge.getId_conge());
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(conge.getId_conge()+100);
         }
     }
-
     @Override
     public void deleteConge(Long id) {
         congeRepo.deleteById(id);

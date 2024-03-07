@@ -19,12 +19,12 @@ import java.util.Set;
 public class congeController {
     IServiceConge iServiceConge;
     @PostMapping("/saveConge/{id}")
-    public ResponseEntity<String> saveCongeAffectAEmpl(@RequestBody Conge p, @PathVariable ("id") Long id){
+    public ResponseEntity<Long> saveCongeAffectAEmpl(@RequestBody Conge p, @PathVariable ("id") Long id){
         return iServiceConge.saveConge(p,id);
     }
 
     @PutMapping("/updateConge/{id}")
-    public ResponseEntity<String> updateConge(@PathVariable ("id") Long id,@RequestBody Conge p) throws Exception {
+    public ResponseEntity<Long> updateConge(@PathVariable ("id") Long id,@RequestBody Conge p) throws Exception {
         return iServiceConge.updateConge(id,p);
     }
     @DeleteMapping("/deleteConge/{p}")

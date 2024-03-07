@@ -16,9 +16,10 @@ import java.util.List;
 public class NoteController {
     ISerivceNote iSerivceNote;
 
-    @PostMapping("/addNote")
-    public void addNote(@RequestBody Note p){
-        iSerivceNote.addNote(p);
+    @PostMapping("/addNote/{id}")
+    public void addNote(@RequestBody Note p,@PathVariable("id") Long id){
+        iSerivceNote.addNote(p,id);
+        iSerivceNote.addPerfermance(id);
     }
     @PutMapping("/updateNote/{id}")
     public Note updateNote(@PathVariable("id") Long id,@RequestBody Note p){

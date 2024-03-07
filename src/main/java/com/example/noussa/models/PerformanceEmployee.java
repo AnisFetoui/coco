@@ -2,10 +2,7 @@ package com.example.noussa.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,16 +12,16 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class PerformanceEmployee implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_performance ;
-    private float note;
+    private float moyenne;
     private String commentaire ;
 
-    @OneToOne(mappedBy = "performanceEmployee")
-    Employee employee;
-    @OneToMany(mappedBy = "performanceEmpl" ,fetch = FetchType.EAGER)
+
+    @OneToOne(mappedBy = "performanceEmployee" ,fetch = FetchType.EAGER)
     @JsonIgnore
-    List<Note> notes;
+    Employee empp;
 }

@@ -1,7 +1,9 @@
 package com.example.noussa.services.service;
 
+import com.example.noussa.models.Employee;
 import com.example.noussa.models.Note;
 import com.example.noussa.models.PerformanceEmployee;
+import com.example.noussa.repos.EmployeeRepo;
 import com.example.noussa.repos.PerfermanceEmplRepo;
 import com.example.noussa.services.interfaces.ISerivcePerformance;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -16,6 +19,7 @@ import java.util.List;
 public class ServicePerformance implements ISerivcePerformance {
 
     PerfermanceEmplRepo performanceEmployeeRepository;
+    EmployeeRepo employeeRepo;
 
     public List<PerformanceEmployee> getAllPerformances() {
         return performanceEmployeeRepository.findAll();
@@ -25,8 +29,11 @@ public class ServicePerformance implements ISerivcePerformance {
         return performanceEmployeeRepository.findById(id).get();
     }
 
-    public PerformanceEmployee savePerformance(PerformanceEmployee performance) {
-        List<Note> notes = performance.getNotes();
+    public PerformanceEmployee savePerformance(PerformanceEmployee performance,Long id) {
+        Employee employee = employeeRepo.findById(id).get();
+        Set<Note> notes = employee.getNotes();
+
+
         float somme = 0.0f;
         for (Note n : notes){
             somme += n.getNote();
@@ -36,7 +43,7 @@ public class ServicePerformance implements ISerivcePerformance {
             throw new IllegalArgumentException("La note doit être comprise entre 0 et 100.");
         }else{
             performance.setCommentaire(calculatePerformanceGlobale(moyenne));
-            performance.setNote(moyenne);
+            performance.setMoyenne(moyenne);
         }
         return performanceEmployeeRepository.save(performance);
     }

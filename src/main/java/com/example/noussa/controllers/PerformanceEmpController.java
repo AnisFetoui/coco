@@ -15,14 +15,14 @@ import java.util.Set;
 @RequestMapping("/perfomanceEmpl")
 public class PerformanceEmpController {
     ISerivcePerformance iSerivcePerformance;
-    @PostMapping("/addperfomanceEmpl")
-    public void savePerformance(@RequestBody PerformanceEmployee p){
-        iSerivcePerformance.savePerformance(p);
+    @PostMapping("/addperfomanceEmpl/{id}")
+    public void savePerformance(@RequestBody PerformanceEmployee p,@PathVariable("id") Long id){
+        iSerivcePerformance.savePerformance(p,id);
     }
-    @PutMapping("/updatePerformance")
-    public PerformanceEmployee updatePerformance(@RequestBody PerformanceEmployee p) throws Exception {
-        return iSerivcePerformance.savePerformance(p);
-    }
+//    @PutMapping("/updatePerformance")
+//    public PerformanceEmployee updatePerformance(@RequestBody PerformanceEmployee p) throws Exception {
+//        return iSerivcePerformance.savePerformance(p);
+//    }
     @DeleteMapping("/deletePerformance/{p}")
     public void deletePerformance(@PathVariable("p") Long p) {
         iSerivcePerformance.deletePerformance(p);

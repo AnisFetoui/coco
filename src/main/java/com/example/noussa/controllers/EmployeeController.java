@@ -6,6 +6,7 @@ import com.example.noussa.models.PosteEmployee;
 import com.example.noussa.services.interfaces.IServiceAbsence;
 import com.example.noussa.services.interfaces.IServiceEmployee;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +27,9 @@ public class EmployeeController {
         iServiceEmployee.assignEmToDep(e,d);
     }
 
-    @PutMapping("/updateEmployee")
-    public Employee updateEmployee(@RequestBody Employee p) throws Exception {
-        return iServiceEmployee.updateEmployee(p);
+    @PutMapping("/updateEmployee/{e}")
+    public ResponseEntity<Long> updateEmployee(@PathVariable("e") Long e, @RequestBody Employee p) {
+        return iServiceEmployee.updateEmployee(e,p);
     }
 
     @DeleteMapping("/DeleteEmployee/{p}")

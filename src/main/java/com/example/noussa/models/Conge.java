@@ -26,7 +26,7 @@ public class Conge implements Serializable {
     @Enumerated(EnumType.STRING)
     private CongeType typeC;
     @Enumerated(EnumType.STRING)
-    private CongeStatut StatutC;
+    private CongeStatut statutC = CongeStatut.PENDING;
     private String commentaire;
     private String justification;
 
