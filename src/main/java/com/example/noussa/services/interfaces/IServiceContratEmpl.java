@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IServiceContratEmpl {
     public ResponseEntity<Long> addContratEmployee(ContratEmployee contrat, Long id);
-    public ContratEmployee updateContratEmployee(ContratEmployee absence);
+    public ResponseEntity<Long> updateContratEmployee(ContratEmployee Updatedcontrat, Long id);
     public void deleteContratEmployee(Long id);
     public ContratEmployee getContratEmployee(Long id);
     List<ContratEmployee> retrieveAll();

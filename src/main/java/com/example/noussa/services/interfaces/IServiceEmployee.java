@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IServiceEmployee {
     public void addEmployeeEtAffectDepartement(Employee employee,Long id);
-    public ResponseEntity<Long> updateEmployee(Long id, Employee employee);
+    public ResponseEntity<Long> updateEmployee(Long id, Employee updatedEmployee,Long p);
     public void deleteEmployee(Long id);
     public Employee getEmployee(Long id);
     List<Employee> retrieveAll();

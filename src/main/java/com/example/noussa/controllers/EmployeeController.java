@@ -27,9 +27,9 @@ public class EmployeeController {
         iServiceEmployee.assignEmToDep(e,d);
     }
 
-    @PutMapping("/updateEmployee/{e}")
-    public ResponseEntity<Long> updateEmployee(@PathVariable("e") Long e, @RequestBody Employee p) {
-        return iServiceEmployee.updateEmployee(e,p);
+    @PutMapping("/updateEmployee/{e}/{pp}")
+    public ResponseEntity<Long> updateEmployee(@PathVariable("e") Long e, @RequestBody Employee p,@PathVariable("pp") Long pp) {
+        return iServiceEmployee.updateEmployee(e,p,pp);
     }
 
     @DeleteMapping("/DeleteEmployee/{p}")

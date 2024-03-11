@@ -25,9 +25,9 @@ public class ContratEmplController {
        return  iServiceContratEmpl.addContratEmployee(p,id);
     }
 
-    @PutMapping("/updateContratEmployee")
-    public ContratEmployee updateContratEmployee(@RequestBody ContratEmployee p) throws Exception {
-        return iServiceContratEmpl.updateContratEmployee(p);
+    @PutMapping("/updateContratEmployee/{id}")
+    public  ResponseEntity<Long> updateContratEmployee(@RequestBody ContratEmployee p, @PathVariable("id") Long id){
+        return iServiceContratEmpl.updateContratEmployee(p,id);
     }
 
     @DeleteMapping("/deleteContratEmployee/{p}")

@@ -77,4 +77,7 @@ public class ServiceDepartement implements IServiceDepartement {
 
         return departement.getEmployees() ;
     }
+    public List<Departement> searchUsersByEmailStartingWithLetter(String startingLetter) {
+        return departementRepo.findByLibelleStartingWith(startingLetter);
+    }
 }

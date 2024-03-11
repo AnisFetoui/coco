@@ -6,6 +6,7 @@ import com.example.noussa.models.Employee;
 import com.example.noussa.services.interfaces.IServiceAbsence;
 import com.example.noussa.services.interfaces.IServiceDepartement;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,12 @@ import java.util.Set;
 
 public class DepartementController {
     IServiceDepartement iServiceDepartement;
+    @GetMapping("/search")
+    public ResponseEntity<List<Departement>> searchUsersByEmailStartingWithLetter(
+            @RequestParam String startingLetter) {
+        List<Departement> matchingUsers = iServiceDepartement.searchUsersByEmailStartingWithLetter(startingLetter);
+        return ResponseEntity.ok(matchingUsers);
+    }
     @PostMapping("/addDepartment")
     public long add(@RequestBody Departement p){
         return iServiceDepartement.addDepartment(p);

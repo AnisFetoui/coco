@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -33,13 +35,14 @@ public class ServiceContratEmpl implements IServiceContratEmpl {
     public ResponseEntity<Long> addContratEmployee(ContratEmployee contrat, Long id) {
         Employee emp = employeeRepo.findById(id).get();
         Set<ContratEmployee> anis = emp.getContratEmployees();
+        ContratEmployee OldContrat = null;
         if(anis.size()>0){
-            ContratEmployee OldContrat = null;
-            for (ContratEmployee ce : anis) {
-                if (ce.getIsArchive() == false) {
-                    OldContrat = ce;
-                }
-            }
+
+//            for (ContratEmployee ce : anis) {
+//                if (ce.getIsArchive() == false) {
+//                    OldContrat = ce;
+//                }
+//            }
             if (ContratEmployeeIsValid(contrat, emp)){
                 contrat.setEmpl(emp);
                 contratEmplRepo.save(contrat);
@@ -48,7 +51,6 @@ public class ServiceContratEmpl implements IServiceContratEmpl {
             }else{
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(100L);
             }
-
         }
             contrat.setEmpl(emp);
         contratEmplRepo.save(contrat);
@@ -64,7 +66,7 @@ public class ServiceContratEmpl implements IServiceContratEmpl {
             }
         }
 
-       if(contrat.getDate_debut().after(contrat.getDate_fin()) ||
+       if(contrat.getDate_debut().isAfter(contrat.getDate_fin()) ||
                nb>=1 && contrat.getTypeCE().equals(ContratEmployeeType.CIVP)
        ){
            return false;
@@ -73,8 +75,23 @@ public class ServiceContratEmpl implements IServiceContratEmpl {
     }
 
     @Override
-    public ContratEmployee updateContratEmployee(ContratEmployee contrat) {
-        return contratEmplRepo.save(contrat);
+    public ResponseEntity<Long> updateContratEmployee(ContratEmployee Updatedcontrat, Long id) {
+        ContratEmployee contratEmployee = contratEmplRepo.findById(id).get();
+        Employee emp = contratEmployee.getEmpl();
+        if (ContratEmployeeIsValid(Updatedcontrat, emp)){
+            contratEmployee.setRib(Updatedcontrat.getRib());
+            contratEmployee.setDate_debut(Updatedcontrat.getDate_debut());
+            contratEmployee.setDate_fin(Updatedcontrat.getDate_fin());
+            contratEmployee.setDuree_hebdomadaire(Updatedcontrat.getDuree_hebdomadaire());
+            contratEmployee.setNumeroSecuriteSociale(Updatedcontrat.getNumeroSecuriteSociale());            contratEmployee.setDuree_hebdomadaire(Updatedcontrat.getDuree_hebdomadaire());
+            contratEmployee.setTypeCE(Updatedcontrat.getTypeCE());
+            contratEmployee.setIsArchive(Updatedcontrat.getIsArchive());
+            contratEmplRepo.save(contratEmployee);
+            return ResponseEntity.ok( contratEmployee.getId_contrat_e());
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(100L);
+        }
+
     }
 
     @Override
@@ -93,15 +110,16 @@ public class ServiceContratEmpl implements IServiceContratEmpl {
     }
 
     @Scheduled(cron = "0 0 1 ? * *")
+//    @Scheduled(fixedDelay = 10000)
+
     public void retrieveAndUpdateStatusContrat() {
         List<ContratEmployee> contrat = retrieveAll();
         LocalDate localDate = LocalDate.now();
         for (int d = 0; d < contrat.size(); d++) {
             ContratEmployee S = contrat.get(d);
-            long diff = S.getDate_fin().getTime() - localDate.getDayOfMonth();
-            long diffs = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-            if (diffs <= 0) {
-                log.info("Contrat expiré " + LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+            long aa =   ChronoUnit.DAYS.between( localDate, S.getDate_fin());
+            if (aa <= 0) {
+                log.info("Contrat expiré. Contract ID: {}. Timestamp: {}", S.getId_contrat_e(), LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
 
                 S.setIsArchive(true);
                 contratEmplRepo.save(S);

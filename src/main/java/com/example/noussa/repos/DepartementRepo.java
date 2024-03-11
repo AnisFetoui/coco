@@ -3,7 +3,11 @@ package com.example.noussa.repos;
 import com.example.noussa.models.Departement;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface DepartementRepo extends JpaRepository<Departement,Long> {
+    List<Departement> findByLibelleStartingWith(String startingLetter);
+
     Departement findByLibelle(String libelle);
      /*
     	@Query("Select "

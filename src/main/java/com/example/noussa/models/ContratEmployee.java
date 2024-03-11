@@ -24,9 +24,9 @@ public class ContratEmployee implements Serializable {
     private String rib;
     private Long numeroSecuriteSociale;
     @Temporal(TemporalType.DATE)
-    private Date date_debut;
+    private LocalDate date_debut;
     @Temporal(TemporalType.DATE)
-    private Date date_fin;
+    private LocalDate date_fin;
     @Enumerated(EnumType.STRING)
     private ContratEmployeeType typeCE;
     private int duree_hebdomadaire;
