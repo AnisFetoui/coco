@@ -2,6 +2,7 @@ package com.example.noussa.services.service;
 
 import com.example.noussa.models.Conge;
 import com.example.noussa.models.CongeStatut;
+import com.example.noussa.models.Departement;
 import com.example.noussa.models.Employee;
 import com.example.noussa.repos.CongeRepo;
 import com.example.noussa.repos.EmployeeRepo;
@@ -93,4 +94,9 @@ public class ServiceConge implements IServiceConge {
     public List<Conge> retrieveAll() {
         return congeRepo.findAll();
     }
+
+    public List<Conge> searchCongesByStartingLetters(String StartingLetter) {
+        return congeRepo.findByCommentaireStartingWithOrJustificationStartingWith(StartingLetter, StartingLetter);
+    }
+
 }

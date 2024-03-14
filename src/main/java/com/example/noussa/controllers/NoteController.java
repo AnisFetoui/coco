@@ -19,6 +19,9 @@ public class NoteController {
     @PostMapping("/addNote/{id}")
     public void addNote(@RequestBody Note p,@PathVariable("id") Long id){
         iSerivceNote.addNote(p,id);
+    }
+    @PostMapping("/addPerfermance/{id}")
+    public void addPerfermance(@PathVariable("id") Long id){
         iSerivceNote.addPerfermance(id);
     }
     @PutMapping("/updateNote/{id}")

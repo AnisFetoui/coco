@@ -1,6 +1,7 @@
 package com.example.noussa.repos;
 
 import com.example.noussa.models.Conge;
+import com.example.noussa.models.Departement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +15,11 @@ public interface CongeRepo extends JpaRepository<Conge,Long> {
     List<Conge> findTeamConges(@Param("teamId") Long teamId,
                                @Param("start") Date start,
                                @Param("end") Date end);
+
+    List<Conge> findByCommentaireStartingWithOrJustificationStartingWith(String commentaireStartingLetter, String justificationStartingLetter);
 }
+
+
      /*
     	@Query("Select "
 			+ "DISTINCT p from Patient p "

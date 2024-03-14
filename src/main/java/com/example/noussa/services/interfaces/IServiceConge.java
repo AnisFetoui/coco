@@ -11,5 +11,5 @@ public interface IServiceConge {
     public void deleteConge(Long id);
     public Conge getConge(Long id);
     List<Conge> retrieveAll();
-
+    public List<Conge> searchCongesByStartingLetters(String StartingLetter);
 }

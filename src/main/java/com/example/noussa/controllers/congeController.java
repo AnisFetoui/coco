@@ -18,6 +18,12 @@ import java.util.Set;
 
 public class congeController {
     IServiceConge iServiceConge;
+    @GetMapping("/search")
+    public ResponseEntity<List<Conge>> searchCongesStartingWithLetter(
+            @RequestParam String startingLetter) {
+        List<Conge> matchingConges = iServiceConge.searchCongesByStartingLetters(startingLetter);
+        return ResponseEntity.ok(matchingConges);
+    }
     @PostMapping("/saveConge/{id}")
     public ResponseEntity<Long> saveCongeAffectAEmpl(@RequestBody Conge p, @PathVariable ("id") Long id){
         return iServiceConge.saveConge(p,id);
