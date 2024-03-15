@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,28 +25,25 @@ public class ServiceConge implements IServiceConge {
     CongeRepo congeRepo;
     EmployeeRepo employeeRepo;
 
-    public boolean isCongeRequestValid(Conge conge,Long id) {
-        List<Conge> anis = congeRepo.findAll();
-        Employee employee = employeeRepo.findById(id).get();
-        if(anis.size()>0){
-        List<Conge> teamConges = congeRepo.findTeamConges(employee.getTeem().getTeam_id(), conge.getDate_debut(), conge.getDate_fin());
-        for (Conge teamConge : teamConges) {
-            log.info("Conge: {}", conge);
-            log.info("Team Conge: {}", teamConge);
-            log.info("Employee NbrJourConge: {}", employee.getNbrJourConge());
+    public boolean isCongeRequestValid(Conge conge, Long employeeId) {
+        Employee employee = employeeRepo.findById(employeeId).get();
 
-            if (conge.getDate_debut().after(conge.getDate_fin()) ||
-                    conge.getDate_fin().after(teamConge.getDate_debut()) && conge.getDate_debut().before(teamConge.getDate_fin()) ||
-            employee.getNbrJourConge()<0) {
-                return false;
-            }
+        long differenceInMilliseconds = conge.getDate_fin().getTime() - conge.getDate_debut().getTime();
+        long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMilliseconds);
+
+        if (employee.getNbrJourConge() < 0 || employee.getNbrJourConge()<differenceInDays) {
+            return false;
         }
-            return true;
-        }else{
-            return true;
-        }
+
+
+        List<Conge> overlappingConges = congeRepo.findCongeInSamePeriodAndSameTeam(
+                employee.getTeem().getTeam_id(),
+                employee.getPosteEmployee(),
+                conge.getDate_debut(),
+                conge.getDate_fin());
+
+        return overlappingConges.isEmpty();
     }
-
 
     public ResponseEntity<Long> saveConge(Conge conge,Long id){
         if (isCongeRequestValid(conge,id)) {
@@ -54,17 +52,43 @@ public class ServiceConge implements IServiceConge {
             long differenceInMilliseconds = conge.getDate_fin().getTime() - conge.getDate_debut().getTime();
             long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMilliseconds);
             employee.setNbrJourConge((int) (employee.getNbrJourConge() - differenceInDays));
-//            conge.setStatutC(CongeStatut.PENDING);
+            employeeRepo.save(employee);
             congeRepo.save(conge);
             return ResponseEntity.ok( conge.getId_conge());
         }else{
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(conge.getId_conge()+100);
         }
     }
+    public boolean isCongeRequestValidUpdate(Conge conge, Long employeeId, Long congeIdToUpdate) {
+        Employee employee = employeeRepo.findById(employeeId).get();
+
+        long differenceInMilliseconds = conge.getDate_fin().getTime() - conge.getDate_debut().getTime();
+        long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMilliseconds);
+
+        if (employee.getNbrJourConge() < 0 || employee.getNbrJourConge()<differenceInDays) {
+            return false;
+        }
+
+        List<Conge> overlappingConges = congeRepo.findCongeInSamePeriodAndSameTeam(
+                employee.getTeem().getTeam_id(),
+                employee.getPosteEmployee(),
+                conge.getDate_debut(),
+                conge.getDate_fin());
+
+        if (congeIdToUpdate != null) {
+            overlappingConges = overlappingConges.stream()
+                    .filter(c -> !c.getId_conge().equals(congeIdToUpdate))
+                    .collect(Collectors.toList());
+        }
+
+        return overlappingConges.isEmpty();
+    }
+
     @Override
     public ResponseEntity<Long> updateConge(Long id,Conge updatedConge) {
         Conge conge = congeRepo.findById(id).get();
-        if (isCongeRequestValid(updatedConge,conge.getEmployee().getId_employe())) {
+        Employee employee = conge.getEmployee();
+        if (isCongeRequestValidUpdate(updatedConge,employee.getId_employe(),id)) {
             conge.setCommentaire(updatedConge.getCommentaire());
             conge.setJustification(updatedConge.getJustification());
             conge.setDate_debut(updatedConge.getDate_debut());
@@ -72,6 +96,10 @@ public class ServiceConge implements IServiceConge {
             conge.setStatutC(updatedConge.getStatutC());
             conge.setTypeC(updatedConge.getTypeC());
             congeRepo.save(conge);
+            long differenceInMilliseconds = conge.getDate_fin().getTime() - conge.getDate_debut().getTime();
+            long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMilliseconds);
+            employee.setNbrJourConge((int) (employee.getNbrJourConge() - differenceInDays));
+            employeeRepo.save(employee);
             return ResponseEntity.ok( conge.getId_conge());
         }else{
             log.error("Validation failed for Conge update. ID: {}", conge.getId_conge());
@@ -81,6 +109,12 @@ public class ServiceConge implements IServiceConge {
     }
     @Override
     public void deleteConge(Long id) {
+        Conge conge = congeRepo.findById(id).get();
+        Employee employee = conge.getEmployee();
+        long differenceInMilliseconds = conge.getDate_fin().getTime() - conge.getDate_debut().getTime();
+        long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMilliseconds);
+        employee.setNbrJourConge((int) (employee.getNbrJourConge()+differenceInDays));
+        employeeRepo.save(employee);
         congeRepo.deleteById(id);
     }
 

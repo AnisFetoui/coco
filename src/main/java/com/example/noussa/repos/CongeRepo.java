@@ -2,6 +2,7 @@ package com.example.noussa.repos;
 
 import com.example.noussa.models.Conge;
 import com.example.noussa.models.Departement;
+import com.example.noussa.models.PosteEmployee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,11 +11,18 @@ import java.util.Date;
 import java.util.List;
 
 public interface CongeRepo extends JpaRepository<Conge,Long> {
-    @Query("SELECT c FROM Conge c WHERE c.employee.teem.team_id = :teamId AND " +
-            "((c.date_debut BETWEEN :start AND :end) OR (c.date_fin BETWEEN :start AND :end))")
-    List<Conge> findTeamConges(@Param("teamId") Long teamId,
-                               @Param("start") Date start,
-                               @Param("end") Date end);
+    @Query("SELECT c FROM Conge c WHERE " +
+            "c.employee.teem.team_id = :teamId AND " +
+            "c.employee.PosteEmployee = :poste AND " +
+            "((c.date_debut BETWEEN :start AND :end) OR " +
+            "(c.date_fin BETWEEN :start AND :end) OR " +
+            "(:start BETWEEN c.date_debut AND c.date_fin) OR " +
+            "(:end BETWEEN c.date_debut AND c.date_fin))")
+    List<Conge> findCongeInSamePeriodAndSameTeam(
+            @Param("teamId") Long teamId,
+            @Param("poste") PosteEmployee poste,
+            @Param("start") Date start,
+            @Param("end") Date end);
 
     List<Conge> findByCommentaireStartingWithOrJustificationStartingWith(String commentaireStartingLetter, String justificationStartingLetter);
 }

@@ -9,8 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -109,6 +114,17 @@ public class ServiceEmployee implements IServiceEmployee {
 //        Team eq  = teemRepo.findById(idEquipe).orElse(null);
 //            e.setTeam(eq);
         return  employeeRepo.save(e);
+    }
+
+    @Scheduled(cron = "0 0 0 1 1 *")
+    //    @Scheduled(fixedDelay = 10000)
+    public void retrieveAndUpdateStatusNbreJourConge() {
+        List<Employee> employees = retrieveAll();
+        for (int d = 0; d < employees.size(); d++) {
+            Employee S = employees.get(d);
+            S.setNbrJourConge(26);
+            employeeRepo.save(S);
+        }
     }
 
 

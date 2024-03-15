@@ -30,7 +30,7 @@ public class ServiceDepartement implements IServiceDepartement {
     @Override
     public Departement updateDepartment(Long id,Departement updatedDepartement) {
         Departement existingDepartement = departementRepo.findById(id).get();
-        existingDepartement.setNbreEmpl(updatedDepartement.getEmployees().size());
+
         existingDepartement.setLibelle(updatedDepartement.getLibelle());
         existingDepartement.setMaxSaturation(updatedDepartement.getMaxSaturation());
         existingDepartement.setEmployees(updatedDepartement.getEmployees());
@@ -39,6 +39,12 @@ public class ServiceDepartement implements IServiceDepartement {
 
     @Override
     public void removeDepartment(Long idDepartment) {
+        Departement departement = departementRepo.findById(idDepartment).get();
+        Set<Employee> anis =  departement.getEmployees();
+        for (Employee em : anis){
+            em.setDepartement(null);
+            employeeRepo.save(em);
+        }
         departementRepo.deleteById(idDepartment);
     }
     @Override
