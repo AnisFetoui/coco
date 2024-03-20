@@ -2,13 +2,19 @@ package com.example.noussa.services.service;
 
 import com.example.noussa.models.Absence;
 import com.example.noussa.models.Employee;
+import com.example.noussa.models.FileAnis;
 import com.example.noussa.repos.AbsenceRepo;
 import com.example.noussa.repos.EmployeeRepo;
+import com.example.noussa.repos.FileRepo;
 import com.example.noussa.services.interfaces.IServiceAbsence;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -20,15 +26,58 @@ public class ServiceAbsence implements IServiceAbsence {
 
     AbsenceRepo absenceRepo;
     EmployeeRepo employeeRepo;
+    FileRepo fileRepo;
+
+//    @Override
+//    public void addAbsence(Absence absence, Long id) {
+//        Employee emp = employeeRepo.findById(id).get();
+//        absence.setEmp(emp);
+//        absenceRepo.save(absence);
+//
+//    }
 
     @Override
-    public void addAbsence(Absence absence,Long id) {
+    public void addAbsence(Absence absence, Long id) {
         Employee emp = employeeRepo.findById(id).get();
-        absence.setEmp(emp);
-        //absence.setValidee(false);
-        absenceRepo.save(absence);
 
+        absence.setEmp(emp);
+        absenceRepo.save(absence);
     }
+//    @Override
+    public ResponseEntity<?> uploadFile( MultipartFile file,Long id) {
+        Absence absence = absenceRepo.findById(id).get();
+
+        try {
+            FileAnis fileEntity = FileAnis.builder().justification(file.getBytes()).contentType(file.getContentType())
+                    .filename(file.getName()).build();
+            fileEntity.setAbsence(absence);
+            fileRepo.save(fileEntity);
+            String message = "File uploaded successfully!";
+            HttpStatus httpStatus = HttpStatus.CREATED;
+            return new ResponseEntity<>(message, httpStatus);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+    public ResponseEntity<List<FileAnis>> getFile() {
+        List<FileAnis> files = fileRepo.findAll();
+        return ResponseEntity.ok(files);
+    }
+
+    public ResponseEntity<?> downloadFile( Long id) {
+        FileAnis fileEntity = fileRepo.findById(id).orElse(null);
+        if (fileEntity != null) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(fileEntity.getContentType()));
+            headers.setContentDisposition(ContentDisposition.attachment().filename(fileEntity.getFilename()).build());
+            ByteArrayResource resource = new ByteArrayResource(fileEntity.getJustification());
+            return ResponseEntity.ok().headers(headers).body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
     @Override
     public void updateAbsence(Long id, Absence updatedAbsence) {
@@ -36,7 +85,7 @@ public class ServiceAbsence implements IServiceAbsence {
         Absence existingAbsence = absenceRepo.findById(id).get();
 
         existingAbsence.setMotif(updatedAbsence.getMotif());
-        existingAbsence.setJustification(updatedAbsence.getJustification());
+//        existingAbsence.setJustification(updatedAbsence.getJustification());
         existingAbsence.setDate(updatedAbsence.getDate());
         existingAbsence.setValidee(updatedAbsence.isValidee());
 

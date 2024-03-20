@@ -3,7 +3,9 @@ package com.example.noussa.controllers;
 import com.example.noussa.models.Absence;
 import com.example.noussa.services.interfaces.IServiceAbsence;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
@@ -15,8 +17,16 @@ import java.util.Set;
 public class AbsenceController {
     IServiceAbsence iServiceAbsence;
     @PostMapping("/addAbsence/{id}")
-    public void addAbsence(@RequestBody Absence p,@PathVariable ("id") Long id){
+    public void addAbsence(@RequestBody Absence p, @PathVariable ("id") Long id){
          iServiceAbsence.addAbsence(p,id);
+    }
+    @PostMapping("/upload/{id}")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable ("id") Long id){
+      return  iServiceAbsence.uploadFile(file,id);
+    }
+    @GetMapping("/download/{id}")
+    public ResponseEntity<?> downloadFile(@PathVariable Long id) {
+        return iServiceAbsence.downloadFile(id);
     }
     @PutMapping("/updateAbsence/{id}")
     public void updateAbsence(@PathVariable ("id") Long id, @RequestBody Absence updatedAbsence) {
