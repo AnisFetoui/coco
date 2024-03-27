@@ -22,8 +22,9 @@ public class FileAnis {
 
     @Column(name = "content_type")
     private String contentType;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
-    Absence absence;
+//
+//    @OneToOne(mappedBy = "fileAnis" ,fetch = FetchType.EAGER)
+//    @JsonIgnore
+//
+//    Absence absence;
 }

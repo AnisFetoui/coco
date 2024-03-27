@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface FileRepo extends JpaRepository<FileAnis,Long> {
 
+    //FileAnis findByAbsence_Id_absence(Long idAbsence);
+
 //    List<Absence> findByStudent(Employee student);
 //
 //    List<Absence> findByLesson(Employee lesson);

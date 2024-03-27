@@ -1,6 +1,7 @@
 package com.example.noussa.controllers;
 
 import com.example.noussa.models.Absence;
+import com.example.noussa.models.FileAnis;
 import com.example.noussa.services.interfaces.IServiceAbsence;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,17 +18,25 @@ import java.util.Set;
 public class AbsenceController {
     IServiceAbsence iServiceAbsence;
     @PostMapping("/addAbsence/{id}")
-    public void addAbsence(@RequestBody Absence p, @PathVariable ("id") Long id){
-         iServiceAbsence.addAbsence(p,id);
+    public ResponseEntity<Long> addAbsence(@RequestBody Absence p, @PathVariable ("id") Long id){
+        return iServiceAbsence.addAbsence(p,id);
     }
-    @PostMapping("/upload/{id}")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable ("id") Long id){
-      return  iServiceAbsence.uploadFile(file,id);
-    }
-    @GetMapping("/download/{id}")
-    public ResponseEntity<?> downloadFile(@PathVariable Long id) {
-        return iServiceAbsence.downloadFile(id);
-    }
+//    @PostMapping("/upload/{id}")
+//    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable ("id") Long id){
+//      return  iServiceAbsence.uploadFile(file,id);
+//    }
+//    @GetMapping("/files")
+//    public ResponseEntity<List<FileAnis>> getFile() {
+//        return iServiceAbsence.getFile();
+//    }
+//    @GetMapping("/OneFile/{id}")
+//    public ResponseEntity<?> getFile( @PathVariable ("id") Long id) {
+//        return iServiceAbsence.findjustifByAbsence(id);
+//    }
+//    @GetMapping("/download/{id}")
+//    public ResponseEntity<?> downloadFile(@PathVariable Long id) {
+//        return iServiceAbsence.downloadFile(id);
+//    }
     @PutMapping("/updateAbsence/{id}")
     public void updateAbsence(@PathVariable ("id") Long id, @RequestBody Absence updatedAbsence) {
         iServiceAbsence.updateAbsence(id, updatedAbsence);

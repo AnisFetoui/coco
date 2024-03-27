@@ -26,6 +26,7 @@ public class Employee implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     Departement departement;
     @OneToMany(mappedBy="employee",fetch = FetchType.EAGER)
+    @JsonIgnore
     Set<Conge> conges;
 
     @OneToMany(mappedBy="employe",fetch = FetchType.EAGER)
@@ -35,8 +36,10 @@ public class Employee implements Serializable {
     Set<Note> notes;
 
     @OneToMany(mappedBy="empl",fetch = FetchType.EAGER)
+    @JsonIgnore
     Set<ContratEmployee> contratEmployees;
     @OneToMany(mappedBy="emp",fetch = FetchType.EAGER)
+    @JsonIgnore
     Set<Absence> absences;
     private int nbrJourConge = 26;
 

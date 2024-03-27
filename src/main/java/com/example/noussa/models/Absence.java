@@ -24,9 +24,9 @@ public class Absence implements Serializable {
     private boolean validee;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
+
     Employee emp;
-    @OneToMany(mappedBy = "absence")
-    List<FileAnis> fileAnis;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    FileAnis fileAnis;
 
 }

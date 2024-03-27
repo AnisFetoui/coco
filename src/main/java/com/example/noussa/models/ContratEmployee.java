@@ -33,7 +33,7 @@ public class ContratEmployee implements Serializable {
     private Boolean isArchive;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
+
     Employee empl;
 
 }

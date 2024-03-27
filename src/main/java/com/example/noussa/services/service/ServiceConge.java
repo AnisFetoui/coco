@@ -13,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -31,7 +33,8 @@ public class ServiceConge implements IServiceConge {
         long differenceInMilliseconds = conge.getDate_fin().getTime() - conge.getDate_debut().getTime();
         long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMilliseconds);
 
-        if (employee.getNbrJourConge() < 0 || employee.getNbrJourConge()<differenceInDays) {
+        if (employee.getNbrJourConge() < 0 || employee.getNbrJourConge()<differenceInDays
+                || conge.getDate_debut().after(conge.getDate_fin())) {
             return false;
         }
 
@@ -45,7 +48,7 @@ public class ServiceConge implements IServiceConge {
         return overlappingConges.isEmpty();
     }
 
-    public ResponseEntity<Long> saveConge(Conge conge,Long id){
+    public ResponseEntity<?> saveConge(Conge conge,Long id){
         if (isCongeRequestValid(conge,id)) {
             Employee employee = employeeRepo.findById(id).get();
             conge.setEmployee(employee);
@@ -56,7 +59,9 @@ public class ServiceConge implements IServiceConge {
             congeRepo.save(conge);
             return ResponseEntity.ok( conge.getId_conge());
         }else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(conge.getId_conge()+100);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Invalid conge request. Please check your inputs.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
     public boolean isCongeRequestValidUpdate(Conge conge, Long employeeId, Long congeIdToUpdate) {
@@ -65,7 +70,8 @@ public class ServiceConge implements IServiceConge {
         long differenceInMilliseconds = conge.getDate_fin().getTime() - conge.getDate_debut().getTime();
         long differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMilliseconds);
 
-        if (employee.getNbrJourConge() < 0 || employee.getNbrJourConge()<differenceInDays) {
+        if (employee.getNbrJourConge() < 0 || employee.getNbrJourConge()<differenceInDays
+                || conge.getDate_debut().after(conge.getDate_fin())) {
             return false;
         }
 
@@ -85,7 +91,7 @@ public class ServiceConge implements IServiceConge {
     }
 
     @Override
-    public ResponseEntity<Long> updateConge(Long id,Conge updatedConge) {
+    public ResponseEntity<?> updateConge(Long id,Conge updatedConge) {
         Conge conge = congeRepo.findById(id).get();
         Employee employee = conge.getEmployee();
         if (isCongeRequestValidUpdate(updatedConge,employee.getId_employe(),id)) {
@@ -102,9 +108,9 @@ public class ServiceConge implements IServiceConge {
             employeeRepo.save(employee);
             return ResponseEntity.ok( conge.getId_conge());
         }else{
-            log.error("Validation failed for Conge update. ID: {}", conge.getId_conge());
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(conge.getId_conge()+100);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Invalid conge request. Please check your inputs.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
     @Override

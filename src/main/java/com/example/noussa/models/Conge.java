@@ -31,7 +31,7 @@ public class Conge implements Serializable {
     private String justification;
 
     @ManyToOne(cascade = CascadeType.ALL)
-            @JsonIgnore
+
     Employee employee;
 
 

@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface IServiceConge {
-    public ResponseEntity<Long> saveConge(Conge conge, Long id);
-    public ResponseEntity<Long> updateConge(Long id,Conge absence);
+    public ResponseEntity<?> saveConge(Conge conge, Long id);
+    public ResponseEntity<?> updateConge(Long id,Conge absence);
     public void deleteConge(Long id);
     public Conge getConge(Long id);
     List<Conge> retrieveAll();

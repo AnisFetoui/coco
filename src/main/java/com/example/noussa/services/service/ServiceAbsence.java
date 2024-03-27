@@ -37,45 +37,57 @@ public class ServiceAbsence implements IServiceAbsence {
 //    }
 
     @Override
-    public void addAbsence(Absence absence, Long id) {
+    public ResponseEntity<Long> addAbsence(Absence absence, Long id) {
         Employee emp = employeeRepo.findById(id).get();
-
         absence.setEmp(emp);
         absenceRepo.save(absence);
+        return ResponseEntity.ok( absence.getId_absence());
+
     }
 //    @Override
-    public ResponseEntity<?> uploadFile( MultipartFile file,Long id) {
-        Absence absence = absenceRepo.findById(id).get();
+//    public ResponseEntity<?> uploadFile( MultipartFile file,Long id) {
+//        Absence absence = absenceRepo.findById(id).get();
+//
+//        try {
+//            FileAnis fileEntity = FileAnis.builder().justification(file.getBytes()).contentType(file.getContentType())
+//                    .filename(file.getName()).build();
+//            absence.setFileAnis(fileEntity);
+//            fileRepo.save(fileEntity);
+//            absenceRepo.save(absence);
+//            String message = "File uploaded successfully!";
+//            return ResponseEntity.status(HttpStatus.CREATED).body(message);
+//        } catch (IOException e) {
+//            return ResponseEntity.status(500).build();
+//        }
+//    }
+//    public ResponseEntity<List<FileAnis>> getFile() {
+//        List<FileAnis> files = fileRepo.findAll();
+//        return ResponseEntity.ok(files);
+//    }
+//    public ResponseEntity<?> findjustifByAbsence(Long id ) {
+//        Absence absence = absenceRepo.findById(id).get();
+//        FileAnis fileEntity = absence.getFileAnis();
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.parseMediaType(fileEntity.getContentType()));
+//        headers.setContentDisposition(ContentDisposition.attachment().filename(fileEntity.getFilename()).build());
+//        ByteArrayResource resource = new ByteArrayResource(fileEntity.getJustification());
+//        return ResponseEntity.ok().headers(headers).body(resource);
+////        return ResponseEntity.ok(absence.getFileAnis()).getBody();
+//    }
 
-        try {
-            FileAnis fileEntity = FileAnis.builder().justification(file.getBytes()).contentType(file.getContentType())
-                    .filename(file.getName()).build();
-            fileEntity.setAbsence(absence);
-            fileRepo.save(fileEntity);
-            String message = "File uploaded successfully!";
-            HttpStatus httpStatus = HttpStatus.CREATED;
-            return new ResponseEntity<>(message, httpStatus);
-        } catch (IOException e) {
-            return ResponseEntity.status(500).build();
-        }
-    }
-    public ResponseEntity<List<FileAnis>> getFile() {
-        List<FileAnis> files = fileRepo.findAll();
-        return ResponseEntity.ok(files);
-    }
-
-    public ResponseEntity<?> downloadFile( Long id) {
-        FileAnis fileEntity = fileRepo.findById(id).orElse(null);
-        if (fileEntity != null) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType(fileEntity.getContentType()));
-            headers.setContentDisposition(ContentDisposition.attachment().filename(fileEntity.getFilename()).build());
-            ByteArrayResource resource = new ByteArrayResource(fileEntity.getJustification());
-            return ResponseEntity.ok().headers(headers).body(resource);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    public ResponseEntity<?> downloadFile( Long id) {
+//        FileAnis fileEntity = fileRepo.findById(id).orElse(null);
+//        if (fileEntity != null) {
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.parseMediaType(fileEntity.getContentType()));
+//            headers.setContentDisposition(ContentDisposition.attachment().filename(fileEntity.getFilename()).build());
+//            ByteArrayResource resource = new ByteArrayResource(fileEntity.getJustification());
+//            return ResponseEntity.ok().headers(headers).body(resource);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
 
 

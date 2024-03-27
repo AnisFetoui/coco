@@ -19,9 +19,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -32,25 +30,25 @@ public class ServiceContratEmpl implements IServiceContratEmpl {
     EmployeeRepo employeeRepo;
 
     @Override
-    public ResponseEntity<Long> addContratEmployee(ContratEmployee contrat, Long id) {
+    public ResponseEntity<?> addContratEmployee(ContratEmployee contrat, Long id) {
         Employee emp = employeeRepo.findById(id).get();
         Set<ContratEmployee> anis = emp.getContratEmployees();
         ContratEmployee OldContrat = null;
         if(anis.size()>0){
-
-//            for (ContratEmployee ce : anis) {
-//                if (ce.getIsArchive() == false) {
-//                    OldContrat = ce;
-//                }
-//            }
             if (ContratEmployeeIsValid(contrat, emp)){
                 contrat.setEmpl(emp);
                 contratEmplRepo.save(contrat);
                 return ResponseEntity.ok( contrat.getId_contrat_e());
 
             }else{
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(100L);
-            }
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Invalid Contrat request. Please check your inputs.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);            }
+        }
+        if(contrat.getDate_debut().isAfter(contrat.getDate_fin())){
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Invalid Contrat request. Please check your inputs.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
             contrat.setEmpl(emp);
         contratEmplRepo.save(contrat);
@@ -75,7 +73,7 @@ public class ServiceContratEmpl implements IServiceContratEmpl {
     }
 
     @Override
-    public ResponseEntity<Long> updateContratEmployee(ContratEmployee Updatedcontrat, Long id) {
+    public ResponseEntity<?> updateContratEmployee(ContratEmployee Updatedcontrat, Long id) {
         ContratEmployee contratEmployee = contratEmplRepo.findById(id).get();
         Employee emp = contratEmployee.getEmpl();
         if (ContratEmployeeIsValid(Updatedcontrat, emp)){
@@ -89,8 +87,9 @@ public class ServiceContratEmpl implements IServiceContratEmpl {
             contratEmplRepo.save(contratEmployee);
             return ResponseEntity.ok( contratEmployee.getId_contrat_e());
         }else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(100L);
-        }
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Invalid Contrat request. Please check your inputs.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);        }
 
     }
 

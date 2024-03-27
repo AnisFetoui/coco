@@ -2,7 +2,9 @@ package com.example.noussa.repos;
 
 import com.example.noussa.models.Absence;
 import com.example.noussa.models.Employee;
+import com.example.noussa.models.FileAnis;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -10,6 +12,9 @@ import java.util.List;
 
 public interface AbsenceRepo extends JpaRepository<Absence,Long> {
     List<Absence> findByDate(LocalDate date);
+
+    @Query(value = "select * from absence order by date desc", nativeQuery = true)
+    public List<Absence> getAbsenceDueToDate();
 
 //    List<Absence> findByStudent(Employee student);
 //

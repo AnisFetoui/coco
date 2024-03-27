@@ -25,12 +25,12 @@ public class congeController {
         return ResponseEntity.ok(matchingConges);
     }
     @PostMapping("/saveConge/{id}")
-    public ResponseEntity<Long> saveCongeAffectAEmpl(@RequestBody Conge p, @PathVariable ("id") Long id){
+    public ResponseEntity<?> saveCongeAffectAEmpl(@RequestBody Conge p, @PathVariable ("id") Long id){
         return iServiceConge.saveConge(p,id);
     }
 
     @PutMapping("/updateConge/{id}")
-    public ResponseEntity<Long> updateConge(@PathVariable ("id") Long id,@RequestBody Conge p) throws Exception {
+    public ResponseEntity<?> updateConge(@PathVariable ("id") Long id,@RequestBody Conge p) throws Exception {
         return iServiceConge.updateConge(id,p);
     }
     @DeleteMapping("/deleteConge/{p}")

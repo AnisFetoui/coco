@@ -19,6 +19,12 @@ import java.util.Set;
 
 public class DepartementController {
     IServiceDepartement iServiceDepartement;
+
+    @GetMapping("/availablePercentage")
+    public ResponseEntity<Double> getAvailablePercentage() {
+        return  iServiceDepartement.calculateAvailablePercentage();
+
+    }
     @GetMapping("/search")
     public ResponseEntity<List<Departement>> searchUsersByEmailStartingWithLetter(
             @RequestParam String startingLetter) {

@@ -21,12 +21,12 @@ public class ContratEmplController {
     IServiceContratEmpl iServiceContratEmpl;
 
     @PostMapping("/saveContratEmployee/{id}")
-    public ResponseEntity<Long> addContratEmployee(@RequestBody ContratEmployee p, @PathVariable("id") Long id){
+    public ResponseEntity<?> addContratEmployee(@RequestBody ContratEmployee p, @PathVariable("id") Long id){
        return  iServiceContratEmpl.addContratEmployee(p,id);
     }
 
     @PutMapping("/updateContratEmployee/{id}")
-    public  ResponseEntity<Long> updateContratEmployee(@RequestBody ContratEmployee p, @PathVariable("id") Long id){
+    public  ResponseEntity<?> updateContratEmployee(@RequestBody ContratEmployee p, @PathVariable("id") Long id){
         return iServiceContratEmpl.updateContratEmployee(p,id);
     }
 
